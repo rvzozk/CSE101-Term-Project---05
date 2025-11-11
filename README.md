@@ -1,13 +1,13 @@
-# CSE101 Term Project - 05
+# CSE 101 Term Project
 This is a terminal-based platform designed for instructors to manage student rosters, record grades, and generate performance analytics for multiple courses.
 
 ## Setup
 
-
-git clone <url>
-cd asdad
+```
+git clone https://github.com/rvzozk/CSE101-Term-Project---05.git
+cd CSE101-Term-Project---05
 python main.py
-
+```
 
 ## Usage
 
