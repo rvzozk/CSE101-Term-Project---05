@@ -1,95 +1,47 @@
-
-
-
 def record_grade(gradebook, course_id, student_id, assessment):
-    if course_id not in gradebook:
-        gradebook[course_id] = {}
-    if student_id not in gradebook[course_id]:
-        gradebook[course_id][student_id] = []
+    # geçerli not aralığında mı kontrol et
     if assessment["score"] < 0 or assessment["score"] > 100:
-        print("-1 : Error for scores.")
+        print("Score is not valid.")
         return gradebook
-    existing = [a for a in gradebook[course_id][student_id] if a.get("id") == assessment.get("id")]
-    if existing:
-        raise ValueError(f"Assessment with id {assessment.get('id')} already exists for student {student_id}.")
-    gradebook[course_id][student_id].append(assessment)
+    
+    # setdefault ile içeriden eksik yapıları oluştur
+    # https://www.w3schools.com/python/ref_dictionary_setdefault.asp
+    gradebook.setdefault(course_id, {}).setdefault(student_id, []).append(assessment)
     return gradebook
 
 
 
 def update_grade(gradebook, course_id, student_id, assessment_id, new_score):
-    if course_id not in gradebook or student_id not in gradebook[course_id]:
-        raise KeyError("Course or student is not found.")
+    if assessment["score"] < 0 or assessment["score"] > 100: # update edilirken de yanlış girilmesin
+        print("Score is not valid.")
+        return gradebook
+        
     for a in gradebook[course_id][student_id]:
         if a.get("id") == assessment_id:
-            a["score"] = new_score
+            a["score"] = new_score # a dict'in id'si eşitse skoru güncellemek için
             return gradebook
-    raise KeyError("Assessment id not found.")
 
 
 def delete_grade(gradebook, course_id, student_id, assessment_id):
-    if course_id not in gradebook or student_id not in gradebook[course_id]:
-        raise KeyError("Course or student not found.")
     original = gradebook[course_id][student_id]
-    updated = [a for a in original if a.get("id") != assessment_id]
-    if len(updated) == len(original):
-        raise KeyError("Assessment id not found.")
+    updated = [a for a in original if a.get("id") != assessment_id] # eşit olanı seçmektense çıkarıp güncelle
     gradebook[course_id][student_id] = updated
     return gradebook
 
 
-def calculate_student_average(gradebook, course_id, student_id):
-    if course_id not in gradebook or student_id not in gradebook[course_id]:
-        raise KeyError("Course or student not found.")
+def calculate_student_average(gradebook, course_id, student_id):    
     assessments = gradebook[course_id][student_id]
-    if not assessments:
-        return 0.0
-    total_weight = sum((a.get("weight", 0) for a in assessments))
-    if total_weight == 0:
-        return sum((a.get("score", 0) for a in assessments)) / len(assessments)
+    total_weight = sum((a.get("weight", 0) for a in assessments)) # weight al, bulamazsan hata verme 0 kabul et
     weighted_sum = sum((a.get("score", 0) * a.get("weight", 0) for a in assessments))
-    return weighted_sum / total_weight * 100 / 100
+    return weighted_sum / total_weight # ağırlıklı ortalama olduğu için 100'e tamamlayacak 
+    #(division by 0 olabilir)*
 
 
 def calculate_course_average(gradebook, course_id):
-    if course_id not in gradebook:
-        raise KeyError("Course not found.")
     students = gradebook[course_id]
-    if not students:
-        return 0.0
-    avgs = []
+    avgs = [] # öğrenci ortalamalarını buna at
     for sid in students:
         avgs.append(calculate_student_average(gradebook, course_id, sid))
     return sum(avgs) / len(avgs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
