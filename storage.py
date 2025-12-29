@@ -17,8 +17,8 @@ def _write_json(path, data): # helper fonksiyon
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 def load_state(base_dir="data"):
-    students = _read_json(os.path.join(base_dir, "students.json"), [])
-    courses = _read_json(os.path.join(base_dir, "courses.json"), [])
+    students = _read_json(os.path.join(base_dir, "students.json"), {})
+    courses = _read_json(os.path.join(base_dir, "courses.json"), {})
     gradebook = _read_json(os.path.join(base_dir, "grades.json"), {})
     settings = _read_json(os.path.join(base_dir, "settings.json"), {})
     return students, courses, gradebook, settings
